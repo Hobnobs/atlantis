@@ -11,7 +11,6 @@ andersenpuckett@gmail.com
 * how to chunk areas/building maps
 
 ## Development To Do
-* irc client to cyb room
 * websocket communication with server
 * user movement/access logic on server
 * mesh space drawing/chunk loading
