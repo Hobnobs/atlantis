@@ -15,5 +15,5 @@ andersenpuckett@gmail.com
 * mesh space loading
 
 ## Features
--
+- graffiti posting on buildings or designate blackboard spaces
 - districts or teleport zones for different board discussions
