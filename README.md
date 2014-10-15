@@ -6,11 +6,12 @@ andersenpuckett@gmail.com
 
 ## Design To Do
 * admin architect mechanics
-* mesh space design, just wireframe?
+* building poly generation, colored outline texture
 * how posting on buildings/surfaces will work
 * how to chunk areas/building maps
 
 ## Development To Do
+* irc client to cyb room
 * websocket communication with server
 * user movement/access logic on server
 * mesh space drawing/chunk loading
