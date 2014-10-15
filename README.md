@@ -19,4 +19,6 @@ andersenpuckett@gmail.com
 ## Features
 - graffiti posting on buildings or designate blackboard spaces
 - post designated on buildings, comments trail across adjacent designated spaces
+- unposted buildings/walls frame starts dull blue, new post changes it to color of choice
+- walls cleaned after time out like traditional board thread death
 - districts or teleport zones for different board discussions
