@@ -13,8 +13,10 @@ andersenpuckett@gmail.com
 
 ## To Do
 * WebGL client for multiple players
+* user movement/access logic on server
 * mesh space loading/chunk loading
 
 ## Features
 - graffiti posting on buildings or designate blackboard spaces
+- post designated on buildings, comments trail across adjacent designated spaces
 - districts or teleport zones for different board discussions
