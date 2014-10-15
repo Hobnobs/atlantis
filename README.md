@@ -1,7 +1,6 @@
 # Atlantis
 ## A WebGL virtual posting space
 
-
 Contact me to discuss development at
 andersenpuckett@gmail.com
 
@@ -11,10 +10,11 @@ andersenpuckett@gmail.com
 * how posting on buildings/surfaces will work
 * how to chunk areas/building maps
 
-## To Do
-* WebGL client for multiple players
+## Development To Do
+* websocket communication with server
 * user movement/access logic on server
-* mesh space loading/chunk loading
+* mesh space drawing/chunk loading
+* post wall selection vector
 
 ## Features
 - graffiti posting on buildings or designate blackboard spaces
