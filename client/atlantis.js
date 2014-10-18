@@ -1,57 +1,131 @@
-function createCube(num) {
+document.addEventListener('keydown', function(event) {
+    if(event.keyCode == 65) {
+        keys.left = true; //A
+    }
+    else if(event.keyCode == 68) {
+        keys.right = true;//D
+    }
+    else if(event.keyCode == 81) {
+        keys.up = true; //Q
+    }
+    else if(event.keyCode == 69) {
+        keys.down = true; //E
+    }
+    else if(event.keyCode == 87) {
+        keys.forward = true; // W
+    }
+    else if(event.keyCode == 83) {
+        keys.backward = true; //S
+    }
+});
+
+
+function createCube(pos, num) {
     //If nothing was passed, default to creating 1 cube
     num = (typeof num === "undefined") ? 1 : num;
     
     for (var i = 0; i < num; i++) {
         var geometry = new THREE.BoxGeometry(i+1,i+1,i+1);
-       
         var colorCube;
-        if (i % 3 == 0) colorCube = new THREE.Color( 1, 0, 0 );
-        else if (i % 3 == 1) colorCube = new THREE.Color( 0, 1, 0 );
-        else if (i % 3 == 2) colorCube = new THREE.Color( 0, 0, 1 );
+        if (entities.num % 3 == 0) colorCube = new THREE.Color( 1, 0, 0 );
+        else if (entities.num % 3 == 1) colorCube = new THREE.Color( 0, 1, 0 );
+        else if (entities.num % 3 == 2) colorCube = new THREE.Color( 0, 0, 1 );
         else colorCube = new THREE.Color( 1, 1, 1 );
        
         var material = new THREE.MeshBasicMaterial( { color: colorCube, wireframe: true } );
     
         entities.objects[entities.num] = new THREE.Mesh( geometry, material );
+        entities.objects[entities.num].position.x = pos[0];
+        entities.objects[entities.num].position.y = pos[1];
+        entities.objects[entities.num].position.z = pos[2];
         scene.add( entities.objects[entities.num] );
+        entities.objects[entities.num].name = "Cube";
         entities.num++;
     }
     
 }
 
+function createPlane(pos) {
+    var geometry = new THREE.PlaneGeometry(50,50,20,20);
+    var colorPlane = new THREE.Color(1, 1, 1);
+    var material = new THREE.MeshBasicMaterial( { color: colorPlane, side: THREE.DoubleSide, wireframe: true} );
+    entities.objects[entities.num] = new THREE.Mesh( geometry, material );
+    scene.add( entities.objects[entities.num] );
+    entities.objects[entities.num].name = "Plane";
+    entities.objects[entities.num].rotation.x += 90;
+    entities.objects[entities.num].position.x = pos[0];
+    entities.objects[entities.num].position.y = pos[1];
+    entities.objects[entities.num].position.z = pos[2];
+    entities.num++;
+        
+}
+
 function init() {
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    camera.speed = 0.1;
+    renderer.setSize( window.innerWidth * 0.80 , window.innerHeight * 0.80  );
     document.body.appendChild( renderer.domElement );
 
-    createCube(3);
+    createCube([0,0,0],3);
+    createCube([6,0,0],3);
+    createCube([-6,0,0],3);
+    createCube([0,6,0],3);
+    createCube([0,-6,0],3);
+    createCube([6,6,0],3);
+    createCube([6,-6,0],3);
+    createCube([-6,-6,0],3);
+    createCube([-6,6,0],3);
+
+    createPlane([0,-10,0]);
 
     camera.position.z = 7;
 }
 
+function checkInputs(){
+    if(keys.left)       {camera.position.x -= camera.speed; keys.left = false;};
+    if(keys.right)      {camera.position.x += camera.speed; keys.right = false;};
+    if(keys.up)         {camera.position.y += camera.speed; keys.up = false;};
+    if(keys.down)       {camera.position.y -= camera.speed; keys.down = false;};
+    if(keys.forward)    {camera.position.z -= camera.speed; keys.forward = false;};
+    if(keys.backward)   {camera.position.z += camera.speed; keys.backward = false;};
+}
+
+function updatePhysics(){
+    
+}
+
 function updateEntities() {
     for (var i = 0; i < entities.num; i++) {
-        dir = i % 2 ? -1 : 1;
-        entities.objects[i].rotation.x += dir * 0.01;
-        entities.objects[i].rotation.y += dir * 0.01;
+        if (entities.objects[i].name == "Cube"){
+            dir = i % 2 ? -1 : 1;
+            entities.objects[i].rotation.x += dir * 0.01;
+            entities.objects[i].rotation.y += dir * 0.01;        
+        }
     }
-    
 }
 
 function gameLoop() {
     requestAnimationFrame(gameLoop);
+    checkInputs();
+    //updatePhysics();
     updateEntities();
     renderer.render(scene, camera);
 }
 
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 100 );
 var entities = new function (){
                                 this.num = 0;
                                 this.objects = [];
                               };
 var renderer = new THREE.WebGLRenderer();
-
+var keys = new function ()  {
+                                this.up = false;
+                                this.down = false;
+                                this.left = false;
+                                this.right = false;
+                                this.forward = false;
+                                this.backward = false;    
+                            };
 
 init();
 gameLoop();
