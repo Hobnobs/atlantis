@@ -1,24 +1,23 @@
 document.addEventListener('keydown', function(event) {
     if(event.keyCode == 65) {
-        keys.left = true; //A
+        input.left = true; //A
     }
     else if(event.keyCode == 68) {
-        keys.right = true;//D
+        input.right = true;//D
     }
     else if(event.keyCode == 81) {
-        keys.up = true; //Q
+        input.up = true; //Q
     }
     else if(event.keyCode == 69) {
-        keys.down = true; //E
+        input.down = true; //E
     }
     else if(event.keyCode == 87) {
-        keys.forward = true; // W
+        input.forward = true; // W
     }
     else if(event.keyCode == 83) {
-        keys.backward = true; //S
+        input.backward = true; //S
     }
 });
-
 
 function createCube(pos, num) {
     //If nothing was passed, default to creating 1 cube
@@ -62,8 +61,10 @@ function createPlane(pos) {
 
 function init() {
     camera.speed = 0.1;
-    renderer.setSize( window.innerWidth * 0.80 , window.innerHeight * 0.80  );
+    renderer.setSize( window.innerWidth, window.innerHeight);
     document.body.appendChild( renderer.domElement );
+
+    THREEx.WindowResize(renderer, camera);
 
     createCube([0,0,0],3);
     createCube([6,0,0],3);
@@ -81,12 +82,12 @@ function init() {
 }
 
 function checkInputs(){
-    if(keys.left)       {camera.position.x -= camera.speed; keys.left = false;};
-    if(keys.right)      {camera.position.x += camera.speed; keys.right = false;};
-    if(keys.up)         {camera.position.y += camera.speed; keys.up = false;};
-    if(keys.down)       {camera.position.y -= camera.speed; keys.down = false;};
-    if(keys.forward)    {camera.position.z -= camera.speed; keys.forward = false;};
-    if(keys.backward)   {camera.position.z += camera.speed; keys.backward = false;};
+    if(input.left)       {camera.position.x -= camera.speed; input.left = false;};
+    if(input.right)      {camera.position.x += camera.speed; input.right = false;};
+    if(input.up)         {camera.position.y += camera.speed; input.up = false;};
+    if(input.down)       {camera.position.y -= camera.speed; input.down = false;};
+    if(input.forward)    {camera.position.z -= camera.speed; input.forward = false;};
+    if(input.backward)   {camera.position.z += camera.speed; input.backward = false;};
 }
 
 function updatePhysics(){
@@ -113,12 +114,12 @@ function gameLoop() {
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 100 );
+var renderer = new THREE.WebGLRenderer();
 var entities = new function (){
                                 this.num = 0;
                                 this.objects = [];
                               };
-var renderer = new THREE.WebGLRenderer();
-var keys = new function ()  {
+var input = new function ()  {
                                 this.up = false;
                                 this.down = false;
                                 this.left = false;
