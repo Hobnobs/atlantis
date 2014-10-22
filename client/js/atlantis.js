@@ -7,6 +7,7 @@ atlantis.run = function(){
     var scene;
     var camera;
     var renderer;
+    var effect;
     var entities;
     var input;
 //    var clock;
@@ -28,22 +29,15 @@ atlantis.run = function(){
         camera.position.z = 7;
         
         renderer = new THREE.WebGLRenderer();
-        rendererStats   = new THREEx.RendererStats();
-        fpsStats = new Stats();
         
         renderer.setSize( window.innerWidth, window.innerHeight);
-        document.body.appendChild( renderer.domElement );
         
-        rendererStats.domElement.style.position = 'absolute';
-        rendererStats.domElement.style.left = '0px';
-        rendererStats.domElement.style.bottom   = '0px';
-        document.body.appendChild( rendererStats.domElement );
-        
-        fpsStats.domElement.style.position	= 'absolute';
-	    fpsStats.domElement.style.right	= '0px';
-	    fpsStats.domElement.style.bottom	= '0px';
-	    document.body.appendChild( fpsStats.domElement );
+        effect = new THREE.OculusRiftEffect( renderer );
+//        effect.setSize( window.innerWidth, window.innerHeight );
 
+        document.body.appendChild( renderer.domElement );
+
+        //debugInit(); //Don't forget about the GameLoop calls
         
         entities = new function (){
                                     this.num = 0;
@@ -54,7 +48,7 @@ atlantis.run = function(){
         
 //        clock = new THREE.Clock();
     
-        THREEx.WindowResize(renderer, camera);
+        window.addEventListener('resize', resizeWindow, false);
 
         createCube([0,0,0],3,false);
         createCube([6,0,0],3);
@@ -69,6 +63,22 @@ atlantis.run = function(){
         createPlane([0,-10,0]);
     }
 
+    function debugInit() {
+        rendererStats   = new THREEx.RendererStats();
+        fpsStats = new Stats();
+        
+        rendererStats.domElement.style.position = 'absolute';
+        rendererStats.domElement.style.left = '0px';
+        rendererStats.domElement.style.bottom   = '0px';
+        document.body.appendChild( rendererStats.domElement );
+        
+        fpsStats.domElement.style.position	= 'absolute';
+	    fpsStats.domElement.style.right	= '0px';
+	    fpsStats.domElement.style.bottom	= '0px';
+	    document.body.appendChild( fpsStats.domElement );
+        
+    }
+
     function inputInit() {
     
         input = new function ()  {
@@ -77,7 +87,8 @@ atlantis.run = function(){
                                     this.left = false;
                                     this.right = false;
                                     this.forward = false;
-                                    this.backward = false;    
+                                    this.backward = false;
+                                    this.oculus = false;    
                                 };
                                 
         document.addEventListener('keydown', function(event) {
@@ -98,6 +109,14 @@ atlantis.run = function(){
             }
             else if(event.keyCode == 83) {
                 input.backward = true; //S
+            }
+            else if(event.keyCode == 79) {
+                if (input.oculus == true) {
+                    input.oculus = false;
+                    resizeWindow();
+                }else{
+                    input.oculus = true;
+                }
             }
         });
 
@@ -123,15 +142,26 @@ atlantis.run = function(){
         });
     }
 
+    function resizeWindow() {
+		renderer.setSize( window.innerWidth, window.innerHeight );
+        effect.setSize( window.innerWidth, window.innerHeight );
+
+		camera.aspect	= window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+    }
+
     function gameLoop() {
-        rendererStats.update(renderer);
-        fpsStats.update();
+        //rendererStats.update(renderer);
+        //fpsStats.update();
         requestAnimationFrame(gameLoop);
         checkInputs(input);
         //updatePhysics();
         updateEntities();
-        renderer.render(scene, camera);
-
+        if(input.oculus == false) {
+            renderer.render(scene, camera);
+        } else {
+            effect.render(scene, camera);
+        }
     }
 
     function checkInputs(input){
@@ -171,9 +201,9 @@ atlantis.run = function(){
             var geometry = new THREE.BoxGeometry(i+1,i+1,i+1);
             var colorCube;
 
-            if (entities.num % 3 == 0) colorCube = new THREE.Color( 1, 0, 0 );
-            else if (entities.num % 3 == 1) colorCube = new THREE.Color( 0, 1, 0 );
-            else if (entities.num % 3 == 2) colorCube = new THREE.Color( 0, 0, 1 );
+            if (i % 3 == 0) colorCube = new THREE.Color( 1, 0, 0 );
+            else if (i % 3 == 1) colorCube = new THREE.Color( 0, 1, 0 );
+            else if (i % 3 == 2) colorCube = new THREE.Color( 0, 0, 1 );
             else colorCube = new THREE.Color( 1, 1, 1 );
            
             var material;
